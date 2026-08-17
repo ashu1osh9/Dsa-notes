@@ -1,0 +1,3148 @@
+DYNAMIC PROGRAMMING HANDBOOK ROADMAP
+
+PART 1: DP FUNDAMENTALS
+
+Topics: 1. What is Dynamic Programming? 2. How to identify a DP problem
+3. Recursion 4. Memoization 5. Tabulation 6. Space Optimization 7.
+Convert: - Recursion -> Memoization - Memoization -> Tabulation -
+Tabulation -> Space Optimization 8. 0 -> n vs n -> 0 DP 9. Top-Down vs
+Bottom-Up 10. State 11. Transition 12. Base Condition 13. Time
+Complexity 14. Space Complexity 15. Common DP Mistakes 16. Dry Runs 17.
+Recursion Trees 18. DP Table Filling
+
+Problems: - Fibonacci - Climbing Stairs - Min Cost Climbing Stairs -
+Frog Jump - House Robber
+
+For EVERY problem: - Problem Statement - Intuition - State - Base
+Condition - Transition - Recursion - Memoization - Tabulation - Space
+Optimization - Dry Run - DP Table - Time Complexity - Space Complexity -
+Common Mistakes - Interview Tips - Pattern Recognition# Graph Traversal (DFS & BFS) 🚀
+
+Graph traversal means **visiting every vertex (node)** of a graph.
+
+There are two ways:
+
+1. DFS (Depth First Search)
+2. BFS (Breadth First Search)
+
+---
+
+# Graph Representation (Adjacency List)
+
+Suppose we have the following graph.
+
+```
+        0
+      /   \
+     1     2
+    / \
+   3   4
+```
+
+Adjacency List
+
+```cpp
+adj[0] = {1,2}
+adj[1] = {0,3,4}
+adj[2] = {0}
+adj[3] = {1}
+adj[4] = {1}
+```
+
+---
+
+# DFS (Depth First Search)
+
+## Idea
+
+DFS goes **as deep as possible** before coming back.
+
+Think of it like exploring a maze.
+
+```
+0
+|
+v
+1
+|
+v
+3
+
+Backtrack
+
+1
+|
+v
+4
+
+Backtrack
+
+0
+|
+v
+2
+```
+
+DFS uses
+
+- Recursion
+- Stack (internally)
+
+---
+
+# DFS Algorithm
+
+```
+Visit node
+
+Mark visited
+
+Visit all unvisited neighbours
+
+Return (Backtrack)
+```
+
+---
+
+# DFS Flow
+
+Starting node = 0
+
+```
+DFS(0)
+
+Visit 0
+
+↓
+
+Visit 1
+
+↓
+
+Visit 3
+
+↓
+
+No neighbour
+
+Backtrack
+
+↓
+
+Visit 4
+
+↓
+
+No neighbour
+
+Backtrack
+
+↓
+
+Visit 2
+
+↓
+
+Finish
+```
+
+Traversal
+
+```
+0 → 1 → 3 → 4 → 2
+```
+
+---
+
+# DFS Dry Run
+
+Graph
+
+```
+adj[0] = {1,2}
+adj[1] = {0,3,4}
+adj[2] = {0}
+adj[3] = {1}
+adj[4] = {1}
+```
+
+Call
+
+```cpp
+dfs(0)
+```
+
+Execution
+
+```
+dfs(0)
+
+|
++--- dfs(1)
+      |
+      +--- dfs(3)
+
+      Backtrack
+
+      |
+      +--- dfs(4)
+
+Backtrack
+
+|
++--- dfs(2)
+```
+
+Output
+
+```
+0 1 3 4 2
+```
+
+---
+
+# DFS Template
+
+```cpp
+void dfs(int node, vector<vector<int>>& adj, vector<bool>& visited)
+{
+    visited[node] = true;
+
+    cout << node << " ";
+
+    for(int neighbour : adj[node])
+    {
+        if(!visited[neighbour])
+        {
+            dfs(neighbour, adj, visited);
+        }
+    }
+}
+```
+
+Call
+
+```cpp
+vector<bool> visited(V,false);
+
+dfs(0,adj,visited);
+```
+
+---
+
+# Complete DFS Code
+
+```cpp
+#include<iostream>
+#include<vector>
+using namespace std;
+
+void dfs(int node, vector<vector<int>>& adj, vector<bool>& visited)
+{
+    visited[node]=true;
+
+    cout<<node<<" ";
+
+    for(int neighbour : adj[node])
+    {
+        if(!visited[neighbour])
+        {
+            dfs(neighbour,adj,visited);
+        }
+    }
+}
+
+int main()
+{
+    int V=5;
+
+    vector<vector<int>> adj(V);
+
+    adj[0]={1,2};
+    adj[1]={0,3,4};
+    adj[2]={0};
+    adj[3]={1};
+    adj[4]={1};
+
+    vector<bool> visited(V,false);
+
+    dfs(0,adj,visited);
+}
+```
+
+---
+
+# BFS (Breadth First Search)
+
+## Idea
+
+BFS visits nodes **Level by Level**.
+
+Instead of going deep,
+
+it visits every neighbour first.
+
+BFS uses
+
+- Queue
+
+---
+
+# BFS Flow
+
+```
+        0
+      /   \
+     1     2
+    / \
+   3   4
+```
+
+Traversal
+
+```
+Level 0
+
+0
+
+↓
+
+Level 1
+
+1 2
+
+↓
+
+Level 2
+
+3 4
+```
+
+Output
+
+```
+0 1 2 3 4
+```
+
+---
+
+# BFS Algorithm
+
+```
+Push starting node
+
+Mark visited
+
+While queue not empty
+
+Take front node
+
+Visit it
+
+Push all unvisited neighbours
+```
+
+---
+
+# BFS Dry Run
+
+Initial Queue
+
+```
+[0]
+```
+
+Visit
+
+```
+Pop 0
+
+Output
+
+0
+
+Push
+
+1
+2
+
+Queue
+
+1 2
+```
+
+Visit
+
+```
+Pop 1
+
+Output
+
+0 1
+
+Push
+
+3
+4
+
+Queue
+
+2 3 4
+```
+
+Visit
+
+```
+Pop 2
+
+Output
+
+0 1 2
+
+Queue
+
+3 4
+```
+
+Visit
+
+```
+Pop 3
+
+Queue
+
+4
+```
+
+Visit
+
+```
+Pop 4
+
+Queue
+
+Empty
+```
+
+Traversal
+
+```
+0 → 1 → 2 → 3 → 4
+```
+
+---
+
+# BFS Template
+
+```cpp
+void bfs(int start, vector<vector<int>>& adj, vector<bool>& visited)
+{
+    queue<int> q;
+
+    q.push(start);
+
+    visited[start]=true;
+
+    while(!q.empty())
+    {
+        int node=q.front();
+
+        q.pop();
+
+        cout<<node<<" ";
+
+        for(int neighbour : adj[node])
+        {
+            if(!visited[neighbour])
+            {
+                visited[neighbour]=true;
+
+                q.push(neighbour);
+            }
+        }
+    }
+}
+```
+
+Call
+
+```cpp
+vector<bool> visited(V,false);
+
+bfs(0,adj,visited);
+```
+
+---
+
+# Complete BFS Code
+
+```cpp
+#include<iostream>
+#include<vector>
+#include<queue>
+
+using namespace std;
+
+void bfs(int start, vector<vector<int>>& adj, vector<bool>& visited)
+{
+    queue<int> q;
+
+    q.push(start);
+
+    visited[start]=true;
+
+    while(!q.empty())
+    {
+        int node=q.front();
+
+        q.pop();
+
+        cout<<node<<" ";
+
+        for(int neighbour : adj[node])
+        {
+            if(!visited[neighbour])
+            {
+                visited[neighbour]=true;
+
+                q.push(neighbour);
+            }
+        }
+    }
+}
+
+int main()
+{
+    int V=5;
+
+    vector<vector<int>> adj(V);
+
+    adj[0]={1,2};
+    adj[1]={0,3,4};
+    adj[2]={0};
+    adj[3]={1};
+    adj[4]={1};
+
+    vector<bool> visited(V,false);
+
+    bfs(0,adj,visited);
+}
+```
+
+---
+
+# Disconnected Graph
+
+Suppose graph is
+
+```
+0 ---- 1 ---- 2
+
+
+3 ---- 4
+```
+
+Calling
+
+```cpp
+dfs(0)
+```
+
+will visit only
+
+```
+0 1 2
+```
+
+because
+
+```
+3
+
+and
+
+4
+
+are disconnected.
+```
+
+So we do
+
+```cpp
+vector<bool> visited(V,false);
+
+for(int i=0;i<V;i++)
+{
+    if(!visited[i])
+    {
+        dfs(i,adj,visited);
+    }
+}
+```
+
+Similarly for BFS
+
+```cpp
+vector<bool> visited(V,false);
+
+for(int i=0;i<V;i++)
+{
+    if(!visited[i])
+    {
+        bfs(i,adj,visited);
+    }
+}
+```
+
+This ensures every component is visited.
+
+---
+
+# Time Complexity
+
+DFS
+
+```
+O(V+E)
+```
+
+Why?
+
+Every vertex is visited once.
+
+Every edge is explored once.
+
+---
+
+BFS
+
+```
+O(V+E)
+```
+
+Same reason.
+
+---
+
+# Space Complexity
+
+DFS
+
+```
+Visited Array
+
++
+
+Recursion Stack
+
+=
+
+O(V)
+```
+
+BFS
+
+```
+Visited Array
+
++
+
+Queue
+
+=
+
+O(V)
+```
+
+---
+
+# DFS vs BFS
+
+| DFS | BFS |
+|------|------|
+| Uses Recursion / Stack | Uses Queue |
+| Goes Deep First | Goes Level by Level |
+| Traversal Example | 0 1 3 4 2 |
+| Traversal Example | 0 1 2 3 4 |
+| Time O(V+E) | Time O(V+E) |
+| Space O(V) | Space O(V) |
+
+---
+
+# Interview Tips ⭐
+
+## DFS
+
+Remember
+
+```
+Visit
+
+↓
+
+Mark Visited
+
+↓
+
+Go to Neighbour
+
+↓
+
+Backtrack
+```
+
+Keywords
+
+- Recursion
+- Stack
+- Backtracking
+
+---
+
+## BFS
+
+Remember
+
+```
+Push
+
+↓
+
+Pop
+
+↓
+
+Visit
+
+↓
+
+Push Neighbours
+```
+
+Keywords
+
+- Queue
+- Level Order
+- Shortest Path (Unweighted Graph)
+
+---
+
+# Revision in 30 Seconds 🚀
+
+DFS
+
+```
+Recursion
+
+↓
+
+Visit
+
+↓
+
+Go Deep
+
+↓
+
+Backtrack
+```
+
+BFS
+
+```
+Queue
+
+↓
+
+Visit Level by Level
+
+↓
+
+Push Neighbours
+```
+
+Complexity
+
+```
+DFS
+
+Time  : O(V+E)
+
+Space : O(V)
+```
+
+```
+BFS
+
+Time  : O(V+E)
+
+Space : O(V)
+```
+
+**Golden Rule**
+
+- **DFS = Stack / Recursion = Deep First**
+- **BFS = Queue = Level First**# Graph Traversal (DFS & BFS) 🚀
+
+Graph traversal means **visiting every vertex (node)** of a graph.
+
+There are two ways:
+
+1. DFS (Depth First Search)
+2. BFS (Breadth First Search)
+
+---
+
+# Graph Representation (Adjacency List)
+
+Suppose we have the following graph.
+
+```
+        0
+      /   \
+     1     2
+    / \
+   3   4
+```
+
+Adjacency List
+
+```cpp
+adj[0] = {1,2}
+adj[1] = {0,3,4}
+adj[2] = {0}
+adj[3] = {1}
+adj[4] = {1}
+```
+
+---
+
+# DFS (Depth First Search)
+
+## Idea
+
+DFS goes **as deep as possible** before coming back.
+
+Think of it like exploring a maze.
+
+```
+0
+|
+v
+1
+|
+v
+3
+
+Backtrack
+
+1
+|
+v
+4
+
+Backtrack
+
+0
+|
+v
+2
+```
+
+DFS uses
+
+- Recursion
+- Stack (internally)
+
+---
+
+# DFS Algorithm
+
+```
+Visit node
+
+Mark visited
+
+Visit all unvisited neighbours
+
+Return (Backtrack)
+```
+
+---
+
+# DFS Flow
+
+Starting node = 0
+
+```
+DFS(0)
+
+Visit 0
+
+↓
+
+Visit 1
+
+↓
+
+Visit 3
+
+↓
+
+No neighbour
+
+Backtrack
+
+↓
+
+Visit 4
+
+↓
+
+No neighbour
+
+Backtrack
+
+↓
+
+Visit 2
+
+↓
+
+Finish
+```
+
+Traversal
+
+```
+0 → 1 → 3 → 4 → 2
+```
+
+---
+
+# DFS Dry Run
+
+Graph
+
+```
+adj[0] = {1,2}
+adj[1] = {0,3,4}
+adj[2] = {0}
+adj[3] = {1}
+adj[4] = {1}
+```
+
+Call
+
+```cpp
+dfs(0)
+```
+
+Execution
+
+```
+dfs(0)
+
+|
++--- dfs(1)
+      |
+      +--- dfs(3)
+
+      Backtrack
+
+      |
+      +--- dfs(4)
+
+Backtrack
+
+|
++--- dfs(2)
+```
+
+Output
+
+```
+0 1 3 4 2
+```
+
+---
+
+# DFS Template
+
+```cpp
+void dfs(int node, vector<vector<int>>& adj, vector<bool>& visited)
+{
+    visited[node] = true;
+
+    cout << node << " ";
+
+    for(int neighbour : adj[node])
+    {
+        if(!visited[neighbour])
+        {
+            dfs(neighbour, adj, visited);
+        }
+    }
+}
+```
+
+Call
+
+```cpp
+vector<bool> visited(V,false);
+
+dfs(0,adj,visited);
+```
+
+---
+
+# Complete DFS Code
+
+```cpp
+#include<iostream>
+#include<vector>
+using namespace std;
+
+void dfs(int node, vector<vector<int>>& adj, vector<bool>& visited)
+{
+    visited[node]=true;
+
+    cout<<node<<" ";
+
+    for(int neighbour : adj[node])
+    {
+        if(!visited[neighbour])
+        {
+            dfs(neighbour,adj,visited);
+        }
+    }
+}
+
+int main()
+{
+    int V=5;
+
+    vector<vector<int>> adj(V);
+
+    adj[0]={1,2};
+    adj[1]={0,3,4};
+    adj[2]={0};
+    adj[3]={1};
+    adj[4]={1};
+
+    vector<bool> visited(V,false);
+
+    dfs(0,adj,visited);
+}
+```
+
+---
+
+# BFS (Breadth First Search)
+
+## Idea
+
+BFS visits nodes **Level by Level**.
+
+Instead of going deep,
+
+it visits every neighbour first.
+
+BFS uses
+
+- Queue
+
+---
+
+# BFS Flow
+
+```
+        0
+      /   \
+     1     2
+    / \
+   3   4
+```
+
+Traversal
+
+```
+Level 0
+
+0
+
+↓
+
+Level 1
+
+1 2
+
+↓
+
+Level 2
+
+3 4
+```
+
+Output
+
+```
+0 1 2 3 4
+```
+
+---
+
+# BFS Algorithm
+
+```
+Push starting node
+
+Mark visited
+
+While queue not empty
+
+Take front node
+
+Visit it
+
+Push all unvisited neighbours
+```
+
+---
+
+# BFS Dry Run
+
+Initial Queue
+
+```
+[0]
+```
+
+Visit
+
+```
+Pop 0
+
+Output
+
+0
+
+Push
+
+1
+2
+
+Queue
+
+1 2
+```
+
+Visit
+
+```
+Pop 1
+
+Output
+
+0 1
+
+Push
+
+3
+4
+
+Queue
+
+2 3 4
+```
+
+Visit
+
+```
+Pop 2
+
+Output
+
+0 1 2
+
+Queue
+
+3 4
+```
+
+Visit
+
+```
+Pop 3
+
+Queue
+
+4
+```
+
+Visit
+
+```
+Pop 4
+
+Queue
+
+Empty
+```
+
+Traversal
+
+```
+0 → 1 → 2 → 3 → 4
+```
+
+---
+
+# BFS Template
+
+```cpp
+void bfs(int start, vector<vector<int>>& adj, vector<bool>& visited)
+{
+    queue<int> q;
+
+    q.push(start);
+
+    visited[start]=true;
+
+    while(!q.empty())
+    {
+        int node=q.front();
+
+        q.pop();
+
+        cout<<node<<" ";
+
+        for(int neighbour : adj[node])
+        {
+            if(!visited[neighbour])
+            {
+                visited[neighbour]=true;
+
+                q.push(neighbour);
+            }
+        }
+    }
+}
+```
+
+Call
+
+```cpp
+vector<bool> visited(V,false);
+
+bfs(0,adj,visited);
+```
+
+---
+
+# Complete BFS Code
+
+```cpp
+#include<iostream>
+#include<vector>
+#include<queue>
+
+using namespace std;
+
+void bfs(int start, vector<vector<int>>& adj, vector<bool>& visited)
+{
+    queue<int> q;
+
+    q.push(start);
+
+    visited[start]=true;
+
+    while(!q.empty())
+    {
+        int node=q.front();
+
+        q.pop();
+
+        cout<<node<<" ";
+
+        for(int neighbour : adj[node])
+        {
+            if(!visited[neighbour])
+            {
+                visited[neighbour]=true;
+
+                q.push(neighbour);
+            }
+        }
+    }
+}
+
+int main()
+{
+    int V=5;
+
+    vector<vector<int>> adj(V);
+
+    adj[0]={1,2};
+    adj[1]={0,3,4};
+    adj[2]={0};
+    adj[3]={1};
+    adj[4]={1};
+
+    vector<bool> visited(V,false);
+
+    bfs(0,adj,visited);
+}
+```
+
+---
+
+# Disconnected Graph
+
+Suppose graph is
+
+```
+0 ---- 1 ---- 2
+
+
+3 ---- 4
+```
+
+Calling
+
+```cpp
+dfs(0)
+```
+
+will visit only
+
+```
+0 1 2
+```
+
+because
+
+```
+3
+
+and
+
+4
+
+are disconnected.
+```
+
+So we do
+
+```cpp
+vector<bool> visited(V,false);
+
+for(int i=0;i<V;i++)
+{
+    if(!visited[i])
+    {
+        dfs(i,adj,visited);
+    }
+}
+```
+
+Similarly for BFS
+
+```cpp
+vector<bool> visited(V,false);
+
+for(int i=0;i<V;i++)
+{
+    if(!visited[i])
+    {
+        bfs(i,adj,visited);
+    }
+}
+```
+
+This ensures every component is visited.
+
+---
+
+# Time Complexity
+
+DFS
+
+```
+O(V+E)
+```
+
+Why?
+
+Every vertex is visited once.
+
+Every edge is explored once.
+
+---
+
+BFS
+
+```
+O(V+E)
+```
+
+Same reason.
+
+---
+
+# Space Complexity
+
+DFS
+
+```
+Visited Array
+
++
+
+Recursion Stack
+
+=
+
+O(V)
+```
+
+BFS
+
+```
+Visited Array
+
++
+
+Queue
+
+=
+
+O(V)
+```
+
+---
+
+# DFS vs BFS
+
+| DFS | BFS |
+|------|------|
+| Uses Recursion / Stack | Uses Queue |
+| Goes Deep First | Goes Level by Level |
+| Traversal Example | 0 1 3 4 2 |
+| Traversal Example | 0 1 2 3 4 |
+| Time O(V+E) | Time O(V+E) |
+| Space O(V) | Space O(V) |
+
+---
+
+# Interview Tips ⭐
+
+## DFS
+
+Remember
+
+```
+Visit
+
+↓
+
+Mark Visited
+
+↓
+
+Go to Neighbour
+
+↓
+
+Backtrack
+```
+
+Keywords
+
+- Recursion
+- Stack
+- Backtracking
+
+---
+
+## BFS
+
+Remember
+
+```
+Push
+
+↓
+
+Pop
+
+↓
+
+Visit
+
+↓
+
+Push Neighbours
+```
+
+Keywords
+
+- Queue
+- Level Order
+- Shortest Path (Unweighted Graph)
+
+---
+
+# Revision in 30 Seconds 🚀
+
+DFS
+
+```
+Recursion
+
+↓
+
+Visit
+
+↓
+
+Go Deep
+
+↓
+
+Backtrack
+```
+
+BFS
+
+```
+Queue
+
+↓
+
+Visit Level by Level
+
+↓
+
+Push Neighbours
+```
+
+Complexity
+
+```
+DFS
+
+Time  : O(V+E)
+
+Space : O(V)
+```
+
+```
+BFS
+
+Time  : O(V+E)
+
+Space : O(V)
+```
+
+**Golden Rule**
+
+- **DFS = Stack / Recursion = Deep First**
+- **BFS = Queue = Level First**# Graph Traversal (DFS & BFS) 🚀
+
+Graph traversal means **visiting every vertex (node)** of a graph.
+
+There are two ways:
+
+1. DFS (Depth First Search)
+2. BFS (Breadth First Search)
+
+---
+
+# Graph Representation (Adjacency List)
+
+Suppose we have the following graph.
+
+```
+        0
+      /   \
+     1     2
+    / \
+   3   4
+```
+
+Adjacency List
+
+```cpp
+adj[0] = {1,2}
+adj[1] = {0,3,4}
+adj[2] = {0}
+adj[3] = {1}
+adj[4] = {1}
+```
+
+---
+
+# DFS (Depth First Search)
+
+## Idea
+
+DFS goes **as deep as possible** before coming back.
+
+Think of it like exploring a maze.
+
+```
+0
+|
+v
+1
+|
+v
+3
+
+Backtrack
+
+1
+|
+v
+4
+
+Backtrack
+
+0
+|
+v
+2
+```
+
+DFS uses
+
+- Recursion
+- Stack (internally)
+
+---
+
+# DFS Algorithm
+
+```
+Visit node
+
+Mark visited
+
+Visit all unvisited neighbours
+
+Return (Backtrack)
+```
+
+---
+
+# DFS Flow
+
+Starting node = 0
+
+```
+DFS(0)
+
+Visit 0
+
+↓
+
+Visit 1
+
+↓
+
+Visit 3
+
+↓
+
+No neighbour
+
+Backtrack
+
+↓
+
+Visit 4
+
+↓
+
+No neighbour
+
+Backtrack
+
+↓
+
+Visit 2
+
+↓
+
+Finish
+```
+
+Traversal
+
+```
+0 → 1 → 3 → 4 → 2
+```
+
+---
+
+# DFS Dry Run
+
+Graph
+
+```
+adj[0] = {1,2}
+adj[1] = {0,3,4}
+adj[2] = {0}
+adj[3] = {1}
+adj[4] = {1}
+```
+
+Call
+
+```cpp
+dfs(0)
+```
+
+Execution
+
+```
+dfs(0)
+
+|
++--- dfs(1)
+      |
+      +--- dfs(3)
+
+      Backtrack
+
+      |
+      +--- dfs(4)
+
+Backtrack
+
+|
++--- dfs(2)
+```
+
+Output
+
+```
+0 1 3 4 2
+```
+
+---
+
+# DFS Template
+
+```cpp
+void dfs(int node, vector<vector<int>>& adj, vector<bool>& visited)
+{
+    visited[node] = true;
+
+    cout << node << " ";
+
+    for(int neighbour : adj[node])
+    {
+        if(!visited[neighbour])
+        {
+            dfs(neighbour, adj, visited);
+        }
+    }
+}
+```
+
+Call
+
+```cpp
+vector<bool> visited(V,false);
+
+dfs(0,adj,visited);
+```
+
+---
+
+# Complete DFS Code
+
+```cpp
+#include<iostream>
+#include<vector>
+using namespace std;
+
+void dfs(int node, vector<vector<int>>& adj, vector<bool>& visited)
+{
+    visited[node]=true;
+
+    cout<<node<<" ";
+
+    for(int neighbour : adj[node])
+    {
+        if(!visited[neighbour])
+        {
+            dfs(neighbour,adj,visited);
+        }
+    }
+}
+
+int main()
+{
+    int V=5;
+
+    vector<vector<int>> adj(V);
+
+    adj[0]={1,2};
+    adj[1]={0,3,4};
+    adj[2]={0};
+    adj[3]={1};
+    adj[4]={1};
+
+    vector<bool> visited(V,false);
+
+    dfs(0,adj,visited);
+}
+```
+
+---
+
+# BFS (Breadth First Search)
+
+## Idea
+
+BFS visits nodes **Level by Level**.
+
+Instead of going deep,
+
+it visits every neighbour first.
+
+BFS uses
+
+- Queue
+
+---
+
+# BFS Flow
+
+```
+        0
+      /   \
+     1     2
+    / \
+   3   4
+```
+
+Traversal
+
+```
+Level 0
+
+0
+
+↓
+
+Level 1
+
+1 2
+
+↓
+
+Level 2
+
+3 4
+```
+
+Output
+
+```
+0 1 2 3 4
+```
+
+---
+
+# BFS Algorithm
+
+```
+Push starting node
+
+Mark visited
+
+While queue not empty
+
+Take front node
+
+Visit it
+
+Push all unvisited neighbours
+```
+
+---
+
+# BFS Dry Run
+
+Initial Queue
+
+```
+[0]
+```
+
+Visit
+
+```
+Pop 0
+
+Output
+
+0
+
+Push
+
+1
+2
+
+Queue
+
+1 2
+```
+
+Visit
+
+```
+Pop 1
+
+Output
+
+0 1
+
+Push
+
+3
+4
+
+Queue
+
+2 3 4
+```
+
+Visit
+
+```
+Pop 2
+
+Output
+
+0 1 2
+
+Queue
+
+3 4
+```
+
+Visit
+
+```
+Pop 3
+
+Queue
+
+4
+```
+
+Visit
+
+```
+Pop 4
+
+Queue
+
+Empty
+```
+
+Traversal
+
+```
+0 → 1 → 2 → 3 → 4
+```
+
+---
+
+# BFS Template
+
+```cpp
+void bfs(int start, vector<vector<int>>& adj, vector<bool>& visited)
+{
+    queue<int> q;
+
+    q.push(start);
+
+    visited[start]=true;
+
+    while(!q.empty())
+    {
+        int node=q.front();
+
+        q.pop();
+
+        cout<<node<<" ";
+
+        for(int neighbour : adj[node])
+        {
+            if(!visited[neighbour])
+            {
+                visited[neighbour]=true;
+
+                q.push(neighbour);
+            }
+        }
+    }
+}
+```
+
+Call
+
+```cpp
+vector<bool> visited(V,false);
+
+bfs(0,adj,visited);
+```
+
+---
+
+# Complete BFS Code
+
+```cpp
+#include<iostream>
+#include<vector>
+#include<queue>
+
+using namespace std;
+
+void bfs(int start, vector<vector<int>>& adj, vector<bool>& visited)
+{
+    queue<int> q;
+
+    q.push(start);
+
+    visited[start]=true;
+
+    while(!q.empty())
+    {
+        int node=q.front();
+
+        q.pop();
+
+        cout<<node<<" ";
+
+        for(int neighbour : adj[node])
+        {
+            if(!visited[neighbour])
+            {
+                visited[neighbour]=true;
+
+                q.push(neighbour);
+            }
+        }
+    }
+}
+
+int main()
+{
+    int V=5;
+
+    vector<vector<int>> adj(V);
+
+    adj[0]={1,2};
+    adj[1]={0,3,4};
+    adj[2]={0};
+    adj[3]={1};
+    adj[4]={1};
+
+    vector<bool> visited(V,false);
+
+    bfs(0,adj,visited);
+}
+```
+
+---
+
+# Disconnected Graph
+
+Suppose graph is
+
+```
+0 ---- 1 ---- 2
+
+
+3 ---- 4
+```
+
+Calling
+
+```cpp
+dfs(0)
+```
+
+will visit only
+
+```
+0 1 2
+```
+
+because
+
+```
+3
+
+and
+
+4
+
+are disconnected.
+```
+
+So we do
+
+```cpp
+vector<bool> visited(V,false);
+
+for(int i=0;i<V;i++)
+{
+    if(!visited[i])
+    {
+        dfs(i,adj,visited);
+    }
+}
+```
+
+Similarly for BFS
+
+```cpp
+vector<bool> visited(V,false);
+
+for(int i=0;i<V;i++)
+{
+    if(!visited[i])
+    {
+        bfs(i,adj,visited);
+    }
+}
+```
+
+This ensures every component is visited.
+
+---
+
+# Time Complexity
+
+DFS
+
+```
+O(V+E)
+```
+
+Why?
+
+Every vertex is visited once.
+
+Every edge is explored once.
+
+---
+
+BFS
+
+```
+O(V+E)
+```
+
+Same reason.
+
+---
+
+# Space Complexity
+
+DFS
+
+```
+Visited Array
+
++
+
+Recursion Stack
+
+=
+
+O(V)
+```
+
+BFS
+
+```
+Visited Array
+
++
+
+Queue
+
+=
+
+O(V)
+```
+
+---
+
+# DFS vs BFS
+
+| DFS | BFS |
+|------|------|
+| Uses Recursion / Stack | Uses Queue |
+| Goes Deep First | Goes Level by Level |
+| Traversal Example | 0 1 3 4 2 |
+| Traversal Example | 0 1 2 3 4 |
+| Time O(V+E) | Time O(V+E) |
+| Space O(V) | Space O(V) |
+
+---
+
+# Interview Tips ⭐
+
+## DFS
+
+Remember
+
+```
+Visit
+
+↓
+
+Mark Visited
+
+↓
+
+Go to Neighbour
+
+↓
+
+Backtrack
+```
+
+Keywords
+
+- Recursion
+- Stack
+- Backtracking
+
+---
+
+## BFS
+
+Remember
+
+```
+Push
+
+↓
+
+Pop
+
+↓
+
+Visit
+
+↓
+
+Push Neighbours
+```
+
+Keywords
+
+- Queue
+- Level Order
+- Shortest Path (Unweighted Graph)
+
+---
+
+# Revision in 30 Seconds 🚀
+
+DFS
+
+```
+Recursion
+
+↓
+
+Visit
+
+↓
+
+Go Deep
+
+↓
+
+Backtrack
+```
+
+BFS
+
+```
+Queue
+
+↓
+
+Visit Level by Level
+
+↓
+
+Push Neighbours
+```
+
+Complexity
+
+```
+DFS
+
+Time  : O(V+E)
+
+Space : O(V)
+```
+
+```
+BFS
+
+Time  : O(V+E)
+
+Space : O(V)
+```
+
+**Golden Rule**
+
+- **DFS = Stack / Recursion = Deep First**
+- **BFS = Queue = Level First**# Graph Traversal (DFS & BFS) 🚀
+
+Graph traversal means **visiting every vertex (node)** of a graph.
+
+There are two ways:
+
+1. DFS (Depth First Search)
+2. BFS (Breadth First Search)
+
+---
+
+# Graph Representation (Adjacency List)
+
+Suppose we have the following graph.
+
+```
+        0
+      /   \
+     1     2
+    / \
+   3   4
+```
+
+Adjacency List
+
+```cpp
+adj[0] = {1,2}
+adj[1] = {0,3,4}
+adj[2] = {0}
+adj[3] = {1}
+adj[4] = {1}
+```
+
+---
+
+# DFS (Depth First Search)
+
+## Idea
+
+DFS goes **as deep as possible** before coming back.
+
+Think of it like exploring a maze.
+
+```
+0
+|
+v
+1
+|
+v
+3
+
+Backtrack
+
+1
+|
+v
+4
+
+Backtrack
+
+0
+|
+v
+2
+```
+
+DFS uses
+
+- Recursion
+- Stack (internally)
+
+---
+
+# DFS Algorithm
+
+```
+Visit node
+
+Mark visited
+
+Visit all unvisited neighbours
+
+Return (Backtrack)
+```
+
+---
+
+# DFS Flow
+
+Starting node = 0
+
+```
+DFS(0)
+
+Visit 0
+
+↓
+
+Visit 1
+
+↓
+
+Visit 3
+
+↓
+
+No neighbour
+
+Backtrack
+
+↓
+
+Visit 4
+
+↓
+
+No neighbour
+
+Backtrack
+
+↓
+
+Visit 2
+
+↓
+
+Finish
+```
+
+Traversal
+
+```
+0 → 1 → 3 → 4 → 2
+```
+
+---
+
+# DFS Dry Run
+
+Graph
+
+```
+adj[0] = {1,2}
+adj[1] = {0,3,4}
+adj[2] = {0}
+adj[3] = {1}
+adj[4] = {1}
+```
+
+Call
+
+```cpp
+dfs(0)
+```
+
+Execution
+
+```
+dfs(0)
+
+|
++--- dfs(1)
+      |
+      +--- dfs(3)
+
+      Backtrack
+
+      |
+      +--- dfs(4)
+
+Backtrack
+
+|
++--- dfs(2)
+```
+
+Output
+
+```
+0 1 3 4 2
+```
+
+---
+
+# DFS Template
+
+```cpp
+void dfs(int node, vector<vector<int>>& adj, vector<bool>& visited)
+{
+    visited[node] = true;
+
+    cout << node << " ";
+
+    for(int neighbour : adj[node])
+    {
+        if(!visited[neighbour])
+        {
+            dfs(neighbour, adj, visited);
+        }
+    }
+}
+```
+
+Call
+
+```cpp
+vector<bool> visited(V,false);
+
+dfs(0,adj,visited);
+```
+
+---
+
+# Complete DFS Code
+
+```cpp
+#include<iostream>
+#include<vector>
+using namespace std;
+
+void dfs(int node, vector<vector<int>>& adj, vector<bool>& visited)
+{
+    visited[node]=true;
+
+    cout<<node<<" ";
+
+    for(int neighbour : adj[node])
+    {
+        if(!visited[neighbour])
+        {
+            dfs(neighbour,adj,visited);
+        }
+    }
+}
+
+int main()
+{
+    int V=5;
+
+    vector<vector<int>> adj(V);
+
+    adj[0]={1,2};
+    adj[1]={0,3,4};
+    adj[2]={0};
+    adj[3]={1};
+    adj[4]={1};
+
+    vector<bool> visited(V,false);
+
+    dfs(0,adj,visited);
+}
+```
+
+---
+
+# BFS (Breadth First Search)
+
+## Idea
+
+BFS visits nodes **Level by Level**.
+
+Instead of going deep,
+
+it visits every neighbour first.
+
+BFS uses
+
+- Queue
+
+---
+
+# BFS Flow
+
+```
+        0
+      /   \
+     1     2
+    / \
+   3   4
+```
+
+Traversal
+
+```
+Level 0
+
+0
+
+↓
+
+Level 1
+
+1 2
+
+↓
+
+Level 2
+
+3 4
+```
+
+Output
+
+```
+0 1 2 3 4
+```
+
+---
+
+# BFS Algorithm
+
+```
+Push starting node
+
+Mark visited
+
+While queue not empty
+
+Take front node
+
+Visit it
+
+Push all unvisited neighbours
+```
+
+---
+
+# BFS Dry Run
+
+Initial Queue
+
+```
+[0]
+```
+
+Visit
+
+```
+Pop 0
+
+Output
+
+0
+
+Push
+
+1
+2
+
+Queue
+
+1 2
+```
+
+Visit
+
+```
+Pop 1
+
+Output
+
+0 1
+
+Push
+
+3
+4
+
+Queue
+
+2 3 4
+```
+
+Visit
+
+```
+Pop 2
+
+Output
+
+0 1 2
+
+Queue
+
+3 4
+```
+
+Visit
+
+```
+Pop 3
+
+Queue
+
+4
+```
+
+Visit
+
+```
+Pop 4
+
+Queue
+
+Empty
+```
+
+Traversal
+
+```
+0 → 1 → 2 → 3 → 4
+```
+
+---
+
+# BFS Template
+
+```cpp
+void bfs(int start, vector<vector<int>>& adj, vector<bool>& visited)
+{
+    queue<int> q;
+
+    q.push(start);
+
+    visited[start]=true;
+
+    while(!q.empty())
+    {
+        int node=q.front();
+
+        q.pop();
+
+        cout<<node<<" ";
+
+        for(int neighbour : adj[node])
+        {
+            if(!visited[neighbour])
+            {
+                visited[neighbour]=true;
+
+                q.push(neighbour);
+            }
+        }
+    }
+}
+```
+
+Call
+
+```cpp
+vector<bool> visited(V,false);
+
+bfs(0,adj,visited);
+```
+
+---
+
+# Complete BFS Code
+
+```cpp
+#include<iostream>
+#include<vector>
+#include<queue>
+
+using namespace std;
+
+void bfs(int start, vector<vector<int>>& adj, vector<bool>& visited)
+{
+    queue<int> q;
+
+    q.push(start);
+
+    visited[start]=true;
+
+    while(!q.empty())
+    {
+        int node=q.front();
+
+        q.pop();
+
+        cout<<node<<" ";
+
+        for(int neighbour : adj[node])
+        {
+            if(!visited[neighbour])
+            {
+                visited[neighbour]=true;
+
+                q.push(neighbour);
+            }
+        }
+    }
+}
+
+int main()
+{
+    int V=5;
+
+    vector<vector<int>> adj(V);
+
+    adj[0]={1,2};
+    adj[1]={0,3,4};
+    adj[2]={0};
+    adj[3]={1};
+    adj[4]={1};
+
+    vector<bool> visited(V,false);
+
+    bfs(0,adj,visited);
+}
+```
+
+---
+
+# Disconnected Graph
+
+Suppose graph is
+
+```
+0 ---- 1 ---- 2
+
+
+3 ---- 4
+```
+
+Calling
+
+```cpp
+dfs(0)
+```
+
+will visit only
+
+```
+0 1 2
+```
+
+because
+
+```
+3
+
+and
+
+4
+
+are disconnected.
+```
+
+So we do
+
+```cpp
+vector<bool> visited(V,false);
+
+for(int i=0;i<V;i++)
+{
+    if(!visited[i])
+    {
+        dfs(i,adj,visited);
+    }
+}
+```
+
+Similarly for BFS
+
+```cpp
+vector<bool> visited(V,false);
+
+for(int i=0;i<V;i++)
+{
+    if(!visited[i])
+    {
+        bfs(i,adj,visited);
+    }
+}
+```
+
+This ensures every component is visited.
+
+---
+
+# Time Complexity
+
+DFS
+
+```
+O(V+E)
+```
+
+Why?
+
+Every vertex is visited once.
+
+Every edge is explored once.
+
+---
+
+BFS
+
+```
+O(V+E)
+```
+
+Same reason.
+
+---
+
+# Space Complexity
+
+DFS
+
+```
+Visited Array
+
++
+
+Recursion Stack
+
+=
+
+O(V)
+```
+
+BFS
+
+```
+Visited Array
+
++
+
+Queue
+
+=
+
+O(V)
+```
+
+---
+
+# DFS vs BFS
+
+| DFS | BFS |
+|------|------|
+| Uses Recursion / Stack | Uses Queue |
+| Goes Deep First | Goes Level by Level |
+| Traversal Example | 0 1 3 4 2 |
+| Traversal Example | 0 1 2 3 4 |
+| Time O(V+E) | Time O(V+E) |
+| Space O(V) | Space O(V) |
+
+---
+
+# Interview Tips ⭐
+
+## DFS
+
+Remember
+
+```
+Visit
+
+↓
+
+Mark Visited
+
+↓
+
+Go to Neighbour
+
+↓
+
+Backtrack
+```
+
+Keywords
+
+- Recursion
+- Stack
+- Backtracking
+
+---
+
+## BFS
+
+Remember
+
+```
+Push
+
+↓
+
+Pop
+
+↓
+
+Visit
+
+↓
+
+Push Neighbours
+```
+
+Keywords
+
+- Queue
+- Level Order
+- Shortest Path (Unweighted Graph)
+
+---
+
+# Revision in 30 Seconds 🚀
+
+DFS
+
+```
+Recursion
+
+↓
+
+Visit
+
+↓
+
+Go Deep
+
+↓
+
+Backtrack
+```
+
+BFS
+
+```
+Queue
+
+↓
+
+Visit Level by Level
+
+↓
+
+Push Neighbours
+```
+
+Complexity
+
+```
+DFS
+
+Time  : O(V+E)
+
+Space : O(V)
+```
+
+```
+BFS
+
+Time  : O(V+E)
+
+Space : O(V)
+```
+
+**Golden Rule**
+
+- **DFS = Stack / Recursion = Deep First**
+- **BFS = Queue = Level First**
+
+------------------------------------------------------------------------
+
+PART 2: GRID DP
+
+Topics: - Grid Traversal - Boundary Checking - Direction Arrays - 2D DP
+States - Forward vs Backward Filling
+
+Problems: - Unique Paths - Unique Paths II - Minimum Path Sum -
+Triangle - Maximum Falling Path Sum - Cherry Pickup I - Cherry Pickup II
+
+For every problem: - Recursion - Memoization - Tabulation - Space
+Optimization - Dry Run - DP Table - Complexity - Common Mistakes
+
+------------------------------------------------------------------------
+
+PART 3: TAKE / NOT TAKE DP
+
+Problems: - Subset Sum - Partition Equal Subset Sum - Count Subsets -
+Count Partitions - Target Sum - Coin Change - Coin Change II - 0/1
+Knapsack - Unbounded Knapsack - Rod Cutting
+
+Topics: - State Definition - Take / Not Take Pattern - DP Table - Space
+Optimization
+
+------------------------------------------------------------------------
+
+PART 4: STRING DP
+
+Problems: - Longest Common Subsequence - Longest Common Substring - Edit
+Distance - Distinct Subsequences - Wildcard Matching - Shortest Common
+Supersequence - Longest Palindromic Subsequence - Palindrome
+Partitioning
+
+Topics: - 2D DP - String Matching - Index Shifting
+
+------------------------------------------------------------------------
+
+PART 5: ADVANCED DP
+
+Problems: - LIS - Longest Bitonic Subsequence - Matrix Chain
+Multiplication - Burst Balloons - Interval DP - Tree DP - Digit DP -
+Bitmask DP - Stock Buy & Sell Series
+
+Topics: - Advanced State Design - Optimization Tricks - Interview
+Patterns
+
+------------------------------------------------------------------------
+
+FINAL REVISION SECTION
+
+-   DP Pattern Sheet
+-   DP Cheat Sheet
+-   State Design Tricks
+-   Base Condition Tricks
+-   Transition Formula Tricks
+-   How to convert Recursion -> Memoization -> Tabulation
+-   0->n vs n->0 comparison
+-   Frequently Asked Interview Questions
+-   100+ Practice Problems
+-   Revision Tables
+-   Complexity Summary
+
+Goal: A complete beginner-to-advanced DP handbook suitable for coding
+interviews, competitive programming, and revision.

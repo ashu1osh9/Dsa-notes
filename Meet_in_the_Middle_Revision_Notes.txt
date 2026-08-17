@@ -1,0 +1,108 @@
+LeetCode 2035 - Partition Array Into Two Arrays to Minimize Sum Difference
+
+Meet in the Middle (Revision Notes)
+
+Algorithm: 1. Split the array into two equal halves. 2. Generate all
+subset sums for both halves. 3. Store them as: count -> list of subset
+sums 4. Sort every vector in the right-half map. 5. For every left
+subset: need = n - leftCount 6. We want the final subset sum as close as
+possible to totalSum / 2. 7. Left has already contributed leftSum.
+Therefore: target = totalSum / 2 - leftSum 8. Perform binary search
+(lower_bound) in right[need]. 9. Check two candidates: - lower_bound
+element - previous element 10. Update answer: ans = min(ans,
+abs(totalSum - 2 * subsetSum))
+
+  ----------------
+  Reference Code
+  ----------------
+
+class Solution { public:
+
+    void generate(int index, int end,
+                  int count, int sum,
+                  vector<int>& nums,
+                  unordered_map<int, vector<int>>& mp) {
+
+        if (index > end) {
+            mp[count].push_back(sum);
+            return;
+        }
+
+        generate(index + 1, end,
+                 count + 1,
+                 sum + nums[index],
+                 nums,
+                 mp);
+
+        generate(index + 1, end,
+                 count,
+                 sum,
+                 nums,
+                 mp);
+    }
+
+    int minimumDifference(vector<int>& nums) {
+
+        int totalSum = 0;
+        for (int x : nums)
+            totalSum += x;
+
+        int n = nums.size() / 2;
+
+        unordered_map<int, vector<int>> left, right;
+
+        generate(0, n - 1, 0, 0, nums, left);
+        generate(n, nums.size() - 1, 0, 0, nums, right);
+
+        for (auto &it : right)
+            sort(it.second.begin(), it.second.end());
+
+        int ans = INT_MAX;
+
+        for (auto &it : left) {
+
+            int leftCount = it.first;
+            vector<int> &leftSums = it.second;
+
+            int need = n - leftCount;
+
+            vector<int> &rightSums = right[need];
+
+            for (int leftSum : leftSums) {
+
+                int target = (totalSum / 2) - leftSum;
+
+                auto idx = lower_bound(rightSums.begin(),
+                                       rightSums.end(),
+                                       target);
+
+                if (idx != rightSums.end()) {
+
+                    int subsetSum = leftSum + *idx;
+
+                    ans = min(ans,
+                              abs(totalSum - 2 * subsetSum));
+                }
+
+                if (idx != rightSums.begin()) {
+
+                    auto prevIdx = prev(idx);
+
+                    int subsetSum = leftSum + *prevIdx;
+
+                    ans = min(ans,
+                              abs(totalSum - 2 * subsetSum));
+                }
+            }
+        }
+
+        return ans;
+    }
+
+};
+
+Key Formula: Difference = |totalSum - 2 * subsetSum|
+
+Time Complexity: O(n * 2^(n/2))
+
+Space Complexity: O(2^(n/2))

@@ -1,0 +1,19 @@
+----
+Two - pointer --
+duplicate --
+
+cycle -- 
+slow = head;
+fast =  slow ->next->next;
+
+
+agar cycle hua toh fast pointer pakar lega slow pointer ko.
+if( slow==fast) -- matlab cycle hai 
+
+fast pointer , slow se do jayad hoga 
+
+1--2---3---4
+-      - 
+slow   fast
+
+

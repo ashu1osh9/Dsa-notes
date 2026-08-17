@@ -1,0 +1,253 @@
+COMPLETE DP NOTES
+
+1.  CLIMBING STAIRS (0 -> n)
+
+State: solve(i)=ways from i to n
+
+Recursion:
+
+    class Solution{
+    public:
+     int solve(int i,int n){
+       if(i==n) return 1;
+       if(i>n) return 0;
+       return solve(i+1,n)+solve(i+2,n);
+     }
+     int climbStairs(int n){
+       return solve(0,n);
+     }
+    };
+
+Memoization:
+
+    class Solution{
+    public:
+     vector<int> dp;
+     int solve(int i,int n){
+       if(i==n) return 1;
+       if(i>n) return 0;
+       if(dp[i]!=-1) return dp[i];
+       return dp[i]=solve(i+1,n)+solve(i+2,n);
+     }
+     int climbStairs(int n){
+       dp.assign(n+1,-1);
+       return solve(0,n);
+     }
+    };
+
+Tabulation:
+
+    class Solution{
+    public:
+     int climbStairs(int n){
+      vector<int> dp(n+2,0);
+      dp[n]=1;
+      for(int i=n-1;i>=0;i--) dp[i]=dp[i+1]+dp[i+2];
+      return dp[0];
+     }
+    };
+
+2.  CLIMBING STAIRS (n -> 0)
+
+State: solve(i)=ways from 0 to i
+
+Recursion:
+
+    class Solution{
+    public:
+     int solve(int i){
+      if(i==0) return 1;
+      if(i<0) return 0;
+      return solve(i-1)+solve(i-2);
+     }
+     int climbStairs(int n){
+      return solve(n);
+     }
+    };
+
+Memoization:
+
+    class Solution{
+    public:
+     vector<int> dp;
+     int solve(int i){
+      if(i==0) return 1;
+      if(i<0) return 0;
+      if(dp[i]!=-1) return dp[i];
+      return dp[i]=solve(i-1)+solve(i-2);
+     }
+     int climbStairs(int n){
+      dp.assign(n+1,-1);
+      return solve(n);
+     }
+    };
+
+Tabulation:
+
+    class Solution{
+    public:
+     int climbStairs(int n){
+      vector<int> dp(n+1,0);
+      dp[0]=1;
+      for(int i=1;i<=n;i++){
+       int one=dp[i-1];
+       int two=(i>=2)?dp[i-2]:0;
+       dp[i]=one+two;
+      }
+      return dp[n];
+     }
+    };
+
+3.  MIN COST CLIMBING STAIRS (0 -> n)
+
+State: solve(i)=minimum cost from i to top
+
+Recursion:
+
+    class Solution{
+    public:
+     int solve(int i,vector<int>& cost){
+      if(i>=cost.size()) return 0;
+      return min(cost[i]+solve(i+1,cost),cost[i]+solve(i+2,cost));
+     }
+     int minCostClimbingStairs(vector<int>& cost){
+      return min(solve(0,cost),solve(1,cost));
+     }
+    };
+
+Memoization:
+
+    class Solution{
+    public:
+     vector<int> dp;
+     int solve(int i,vector<int>& cost){
+      if(i>=cost.size()) return 0;
+      if(dp[i]!=-1) return dp[i];
+      return dp[i]=min(cost[i]+solve(i+1,cost),cost[i]+solve(i+2,cost));
+     }
+     int minCostClimbingStairs(vector<int>& cost){
+      dp.assign(cost.size(),-1);
+      return min(solve(0,cost),solve(1,cost));
+     }
+    };
+
+Tabulation:
+
+    class Solution{
+    public:
+     int minCostClimbingStairs(vector<int>& cost){
+      int n=cost.size();
+      vector<int> dp(n+2,0);
+      for(int i=n-1;i>=0;i--)
+        dp[i]=cost[i]+min(dp[i+1],dp[i+2]);
+      return min(dp[0],dp[1]);
+     }
+    };
+
+4.  MIN COST CLIMBING STAIRS (n -> 0)
+
+State: solve(i)=minimum cost to reach stair i
+
+Recursion:
+
+    class Solution{
+    public:
+     int solve(int i,vector<int>& cost){
+      if(i==0) return cost[0];
+      if(i==1) return cost[1];
+      return cost[i]+min(solve(i-1,cost),solve(i-2,cost));
+     }
+     int minCostClimbingStairs(vector<int>& cost){
+      int n=cost.size();
+      return min(solve(n-1,cost),solve(n-2,cost));
+     }
+    };
+
+Memoization:
+
+    class Solution{
+    public:
+     vector<int> dp;
+     int solve(int i,vector<int>& cost){
+      if(i==0) return cost[0];
+      if(i==1) return cost[1];
+      if(dp[i]!=-1) return dp[i];
+      return dp[i]=cost[i]+min(solve(i-1,cost),solve(i-2,cost));
+     }
+     int minCostClimbingStairs(vector<int>& cost){
+      int n=cost.size();
+      dp.assign(n,-1);
+      return min(solve(n-1,cost),solve(n-2,cost));
+     }
+    };
+
+Tabulation:
+
+    class Solution{
+    public:
+     int minCostClimbingStairs(vector<int>& cost){
+      int n=cost.size();
+      vector<int> dp(n);
+      dp[0]=cost[0];
+      dp[1]=cost[1];
+      for(int i=2;i<n;i++)
+        dp[i]=cost[i]+min(dp[i-1],dp[i-2]);
+      return min(dp[n-1],dp[n-2]);
+     }
+    };
+
+5.  UNIQUE PATHS
+
+State: solve(i,j)=paths from (i,j) to destination
+
+Recursion:
+
+    class Solution{
+    public:
+     int solve(int i,int j,int m,int n){
+      if(i==m-1&&j==n-1) return 1;
+      if(i>=m||j>=n) return 0;
+      return solve(i,j+1,m,n)+solve(i+1,j,m,n);
+     }
+     int uniquePaths(int m,int n){
+      return solve(0,0,m,n);
+     }
+    };
+
+Memoization:
+
+    class Solution{
+    public:
+     vector<vector<int>> dp;
+     int solve(int i,int j,int m,int n){
+      if(i==m-1&&j==n-1) return 1;
+      if(i>=m||j>=n) return 0;
+      if(dp[i][j]!=-1) return dp[i][j];
+      return dp[i][j]=solve(i,j+1,m,n)+solve(i+1,j,m,n);
+     }
+     int uniquePaths(int m,int n){
+      dp.assign(m,vector<int>(n,-1));
+      return solve(0,0,m,n);
+     }
+    };
+
+Tabulation:
+
+    class Solution{
+    public:
+     int uniquePaths(int m,int n){
+      vector<vector<int>> dp(m,vector<int>(n,0));
+      dp[m-1][n-1]=1;
+      for(int i=m-1;i>=0;i--)
+       for(int j=n-1;j>=0;j--){
+        if(i==m-1&&j==n-1) continue;
+        int right=(j+1<n)?dp[i][j+1]:0;
+        int down=(i+1<m)?dp[i+1][j]:0;
+        dp[i][j]=right+down;
+       }
+      return dp[0][0];
+     }
+    };
+
+Golden Rule: - Depends on i+1/i+2 => fill DP from end to start. -
+Depends on i-1/i-2 => fill DP from start to end.

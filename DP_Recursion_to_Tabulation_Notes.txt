@@ -1,0 +1,168 @@
+DP: Recursion to Tabulation Notes
+
+Golden Rule
+
+DP hamesha us direction me fill hoti hai jahan dependency pehle se
+available ho.
+
+  ---------------------------------------------------
+  CASE 1: Recursion depends on previous state (i-1)
+  ---------------------------------------------------
+
+Recursion:
+
+    int solve(int i, vector<int>& arr){
+        if(i==0) return arr[0];
+        return arr[i] + solve(i-1, arr);
+    }
+
+Tabulation:
+
+    vector<int> dp(n);
+    dp[0] = arr[0];
+
+    for(int i=1;i<n;i++){
+        dp[i] = arr[i] + dp[i-1];
+    }
+
+DP Table for arr = [1,2,3,4,5]
+
+Base: 1 _ _ _ _
+
+After filling: 1 3 6 10 15
+
+Loop Direction: 0 —> n-1
+
+Reason: dp[i] depends on dp[i-1], therefore dp[i-1] must already be
+computed.
+
+  -------------------------------------------------
+  CASE 2: Recursion depends on future state (i+1)
+  -------------------------------------------------
+
+Recursion:
+
+    int solve(int i, vector<int>& arr){
+        if(i==n-1) return arr[i];
+        return arr[i] + solve(i+1, arr);
+    }
+
+Tabulation:
+
+    vector<int> dp(n);
+    dp[n-1] = arr[n-1];
+
+    for(int i=n-2;i>=0;i--){
+        dp[i] = arr[i] + dp[i+1];
+    }
+
+DP Table
+
+Base: _ _ _ _ 5
+
+Final: 15 14 12 9 5
+
+Loop Direction: n-1 —> 0
+
+Reason: dp[i] depends on dp[i+1], therefore dp[i+1] must already be
+computed.
+
+  ----------------------------------
+  2D DP Example (Minimum Path Sum)
+  ----------------------------------
+
+Recursion:
+
+    int solve(int i,int j){
+
+        if(i==0 && j==0)
+            return grid[0][0];
+
+        if(i<0 || j<0)
+            return 1e9;
+
+        int up = solve(i-1,j);
+        int left = solve(i,j-1);
+
+        return grid[i][j] + min(up,left);
+    }
+
+State: solve(i,j) -> dp[i][j]
+
+Base Condition: dp[0][0] = grid[0][0];
+
+Transition:
+
+    dp[i][j] = grid[i][j] + min(dp[i-1][j], dp[i][j-1]);
+
+Method 1 (Separate first row/column)
+
+    dp[0][0]=grid[0][0];
+
+        for(int j=1;j<m;j++)
+                dp[0][j]=grid[0][j]+dp[0][j-1];
+
+                    for(int i=1;i<n;i++)
+                            dp[i][0]=grid[i][0]+dp[i-1][0];
+
+                                for(int i=1;i<n;i++){
+                                            for(int j=1;j<m;j++){
+                                                            dp[i][j]=grid[i][j]+min(dp[i-1][j],dp[i][j-1]);
+                                            }
+                                }
+                                            }
+                                }
+
+Method 2 (Single Loop)
+
+    for(int i=0;i<n;i++){
+        for(int j=0;j<m;j++){
+
+            if(i==0 && j==0){
+                dp[i][j]=grid[i][j];
+            }
+            else{
+
+                int up=1e9;
+                int left=1e9;
+
+                if(i>0) up=dp[i-1][j];
+                if(j>0) left=dp[i][j-1];
+
+                dp[i][j]=grid[i][j]+min(up,left);
+            }
+        }
+    }
+
+Example Grid
+
+1 3 1 1 5 1 4 2 1
+
+Final DP
+
+1 4 5 2 7 6 6 8 7
+
+  ----------------------------
+  Universal Conversion Steps
+  ----------------------------
+
+1.  Find State solve(…) -> dp[…]
+
+2.  Convert Base Case if(base) return x; -> dp[base] = x;
+
+3.  Replace recursive calls solve(…) -> dp[…]
+
+4.  Replace return return expression; -> dp[state] = expression;
+
+5.  Decide loop direction
+
+solve(i-1) -> Forward loop solve(i-2) -> Forward loop
+
+solve(i+1) -> Backward loop solve(i+2) -> Backward loop
+
+2D: solve(i-1,j) -> Top to Bottom solve(i,j-1) -> Left to Right
+
+solve(i+1,j) -> Bottom to Top solve(i,j+1) -> Right to Left
+
+Memory Trick: Recursion jis direction me jaati hai, Tabulation uske
+opposite direction me fill hoti hai.
